@@ -88,6 +88,15 @@ class FunSetSuite extends munit.FunSuite:
       assert(!contains(s, 3), "Intersect 2")
   }
   
-
+  
+  test("filter contains all element that holds given predicate") {
+    new TestSets:
+      val m = union(s1, s2)
+      def isEven(i: Int) = (i%2==0)
+      val s = filter(m, isEven)
+      assert(!contains(s, 1), "Filter 1")
+      assert(contains(s, 2), "Filter 2")
+  }
+  
   import scala.concurrent.duration.*
   override val munitTimeout = 10.seconds
