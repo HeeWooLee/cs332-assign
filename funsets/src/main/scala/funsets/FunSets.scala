@@ -42,7 +42,7 @@ trait FunSets extends FunSetsInterface:
   /**
    * Returns the subset of `s` for which `p` holds.
    */
-  def filter(s: FunSet, p: Int => Boolean): FunSet = (x => p(x))
+  def filter(s: FunSet, p: Int => Boolean): FunSet = (x => contains(s, x) && p(x))
 
 
   /**
@@ -55,7 +55,7 @@ trait FunSets extends FunSetsInterface:
    */
   def forall(s: FunSet, p: Int => Boolean): Boolean =
     def iter(a: Int): Boolean =
-      if (contains(s,a) && !p(a))then
+      if contains(s,a) && !p(a) then
         false
       else if (a>bound) then
         true
@@ -67,12 +67,12 @@ trait FunSets extends FunSetsInterface:
    * Returns whether there exists a bounded integer within `s`
    * that satisfies `p`.
    */
-  def exists(s: FunSet, p: Int => Boolean): Boolean = !forall(s, (x => !p(x)))
+  def exists(s: FunSet, p: Int => Boolean): Boolean = !forall(s, (x=> p(x)))
 
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-  def map(s: FunSet, f: Int => Int): FunSet = (x => exists(s, y=> x==f(y)))
+  def map(s: FunSet, f: Int => Int): FunSet = (x => exists(s, (y => x==f(y))))
 
   /**
    * Displays the contents of a set

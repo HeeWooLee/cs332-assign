@@ -16,3 +16,4 @@ logs/
 */project/*
 *.zip
 .gitmodules
+*.pdf
