@@ -17,3 +17,6 @@ logs/
 *.zip
 .gitmodules
 *.pdf
+*.sbt
+.gitignore
+.bsp

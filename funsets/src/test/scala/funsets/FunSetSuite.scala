@@ -97,6 +97,26 @@ class FunSetSuite extends munit.FunSuite:
       assert(!contains(s, 1), "Filter 1")
       assert(contains(s, 2), "Filter 2")
   }
-  
+
+  test("exists checks whether there exists a element that satisfies given predicate"){
+    new TestSets:
+      val m = union(s1, s2)
+      val n = singletonSet(1001)
+      def isEven(i: Int) = (i%2==0)
+      val s = exists(m, isEven)
+      val t = exists(n, isEven)
+      assert(s, "Exists 1")
+  }
+
+  test("map transform each element according to given function"){
+    new TestSets:
+      val m = union(s1, s2)
+      def makeDouble(i:Int) = (2*i)
+      val s = map(m, makeDouble)
+      assert(contains(s,2), "Map 1")
+      assert(contains(s,4), "Map 2")
+      assert(!contains(s,1), "Map 3")
+  }
+
   import scala.concurrent.duration.*
   override val munitTimeout = 10.seconds
