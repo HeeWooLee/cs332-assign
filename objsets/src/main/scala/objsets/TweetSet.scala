@@ -40,7 +40,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Can we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def filter(p: Tweet => Boolean): TweetSet = ???
+  def filter(p: Tweet => Boolean): TweetSet 
 
   /**
    * This is a helper method for `filter` that propagates the accumulated tweets.
@@ -53,7 +53,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def union(that: TweetSet): TweetSet = ???
+  def union(that: TweetSet): TweetSet 
 
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -64,7 +64,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet 
 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -75,7 +75,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList 
 
   /**
    * The following methods are already implemented
@@ -105,7 +105,14 @@ abstract class TweetSet extends TweetSetInterface:
   def foreach(f: Tweet => Unit): Unit
 
 class Empty extends TweetSet:
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
+  def filter(p: Tweet => Boolean): TweetSet = this
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = this
+
+  def union(that: TweetSet): TweetSet = that
+  
+  def mostRetweeted: Tweet = throw java.util.NoSuchElementException("mostRetweeted of EmptySet")
+
+  def descendingByRetweet: TweetList = Nil
 
   /**
    * The following methods are already implemented
@@ -120,9 +127,16 @@ class Empty extends TweetSet:
   def foreach(f: Tweet => Unit): Unit = ()
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet:
-
+  def filter(p: Tweet => Boolean): TweetSet = ???
+  
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
 
+  def union(that: TweetSet): TweetSet = 
+    left.union(right).union(that).incl(elem)
+  
+  def mostRetweeted: Tweet = ???
+  
+  def descendingByRetweet: TweetList = ???
 
   /**
    * The following methods are already implemented
