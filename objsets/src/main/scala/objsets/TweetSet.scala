@@ -40,7 +40,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Can we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def filter(p: Tweet => Boolean): TweetSet 
+  def filter(p: Tweet => Boolean): TweetSet = filterAcc(p, Empty())
 
   /**
    * This is a helper method for `filter` that propagates the accumulated tweets.
@@ -105,8 +105,7 @@ abstract class TweetSet extends TweetSetInterface:
   def foreach(f: Tweet => Unit): Unit
 
 class Empty extends TweetSet:
-  def filter(p: Tweet => Boolean): TweetSet = this
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = this
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
   def union(that: TweetSet): TweetSet = that
   
@@ -127,16 +126,24 @@ class Empty extends TweetSet:
   def foreach(f: Tweet => Unit): Unit = ()
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet:
-  def filter(p: Tweet => Boolean): TweetSet = ???
-  
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = 
+    if p(elem) then left.union(right).filterAcc(p, acc.incl(elem))
+    else left.union(right).filterAcc(p, acc)
 
   def union(that: TweetSet): TweetSet = 
     left.union(right).union(that).incl(elem)
   
   def mostRetweeted: Tweet = ???
+    // def retweetCompare(one: Tweet, two: Tweet): Tweet = 
+    //   if one.retweets > two.retweets then one 
+    //   else two
+    // left.getClass()
+    // else if left is Empty Set then retweetCompare(elem, right.mostRetweeted)
+    // else if right is EmptySet then retweetCompare(elem, left.mostRetweeted)
+    // else retweetCompare(retweetCompare(elem, left.mostRetweeted), right.mostRetweeted)
   
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList = ??? 
+
 
   /**
    * The following methods are already implemented
