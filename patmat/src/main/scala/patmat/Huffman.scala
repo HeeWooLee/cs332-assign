@@ -109,8 +109,19 @@ trait Huffman extends HuffmanInterface:
    * unchanged.
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = 
+    def compare(weight: Int, tree: CodeTree):Boolean = 
+      tree match
+        case f: Fork => weight < f.weight
+        case l: Leaf => weight < l.weight
+      
+    def comparator(x: CodeTree, y:CodeTree): Boolean = 
+      x match
+        case f: Fork => compare(f.weight, y)
+        case l: Leaf => compare(l.weight, y)
+      
     if trees.length < 2 then trees
-    else List(makeCodeTree(trees.head, trees.tail.head)) ::: trees.drop(2)
+    else 
+      (trees.drop(2)::: List(makeCodeTree(trees.head, trees.tail.head))).sortWith(comparator(_,_))
 
 
   /**
@@ -149,13 +160,13 @@ trait Huffman extends HuffmanInterface:
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] = 
     def recurseTree(tree: CodeTree, bits: List[Bit]): Char = 
       tree match
-        case Fork(left, right, chars, weight) => if bits.head==1 then recurseTree(right, bits.tail) else recurseTree(left, bits.tail)
-        case Leaf(char, weight) => char
+        case f: Fork => if bits.head==1 then recurseTree(f.right, bits.tail) else recurseTree(f.left, bits.tail)
+        case l: Leaf => l.char
 
     def cutBit(tree: CodeTree, bits: List[Bit]): List[Bit] = 
       tree match
-        case Fork(left, right, chars, weight) => if bits.head==1 then cutBit(right, bits.tail) else cutBit(left, bits.tail)
-        case Leaf(char, weight) => bits
+        case f: Fork => if bits.head==1 then cutBit(f.right, bits.tail) else cutBit(f.left, bits.tail)
+        case l: Leaf => bits
     
     bits match
       case Nil => Nil
@@ -190,13 +201,13 @@ trait Huffman extends HuffmanInterface:
   def encode(tree: CodeTree)(text: List[Char]): List[Bit] =
     def recurseTree(tree: CodeTree, text: Char, acc: List[Bit]): List[Bit] =
       tree match
-        case Leaf(char, weight) => acc
-        case Fork(left, right, chars, weight) => if toLeftTree(left, text) then recurseTree(left, text, acc:::List(0)) else recurseTree(right, text, acc:::List(1))
+        case f: Fork => if toLeftTree(f.left, text) then recurseTree(f.left, text, acc:::List(0)) else recurseTree(f.right, text, acc:::List(1))
+        case _ => acc
 
     def toLeftTree(tree: CodeTree, text: Char): Boolean = 
       tree match
-        case Leaf(char, weight) => char==text
-        case Fork(left, right, chars, weight) => chars.contains(text) 
+        case l: Leaf => l.char==text
+        case f: Fork => f.chars.contains(text) 
       
     text match
       case Nil => Nil
@@ -224,8 +235,8 @@ trait Huffman extends HuffmanInterface:
    */
   def convert(tree: CodeTree): CodeTable = 
     tree match
-      case Leaf(char, weight) => List((char, List()))
-      case Fork(left, right, chars, weight) => mergeCodeTables(convert(left), convert(right))
+      case l: Leaf => List((l.char, List()))
+      case f: Fork => mergeCodeTables(convert(f.left), convert(f.right))
 
   /**
    * This function takes two code tables and merges them into one. Depending on how you

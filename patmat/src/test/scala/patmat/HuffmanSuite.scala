@@ -7,6 +7,7 @@ class HuffmanSuite extends munit.FunSuite:
     val t1 = Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5)
     val t2 = Fork(Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5), Leaf('d',4), List('a','b','d'), 9)
     val t3 = Leaf('a', 2)
+    val t4 = Fork(Leaf('d',4), Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5), List('d','a','b'), 9)
   }
 
 
@@ -58,13 +59,13 @@ class HuffmanSuite extends munit.FunSuite:
   test("until"){
     new TestTrees:
       val trees =  List(Leaf('a',2), Leaf('b',3), Leaf('d',4))
-      assertEquals(until(singleton, combine)(trees), List(t2))
+      assertEquals(until(singleton, combine)(trees), List(t4))
   }
 
 
   test("createCodeTree aabbbdddd"){
     new TestTrees:
-      assertEquals(createCodeTree(string2Chars("aabbbdddd")), t2)
+      assertEquals(createCodeTree(string2Chars("aabbbdddd")), t4)
   }
 
   test("decode and encode a very short text should be identity (10pts)") {
