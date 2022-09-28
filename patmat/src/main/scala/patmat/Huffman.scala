@@ -103,13 +103,14 @@ trait Huffman extends HuffmanInterface:
    * This function takes the first two elements of the list `trees` and combines
    * them into a single `Fork` node. This node is then added back into the
    * remaining elements of `trees` at a position such that the ordering by weights
-   * is preserved.
+   * is preserved.  
    *
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = 
-    List(makeCodeTree(trees.head, trees.tail.head)) ::: trees.drop(2)
+    if trees.length < 2 then trees
+    else List(makeCodeTree(trees.head, trees.tail.head)) ::: trees.drop(2)
 
 
   /**
@@ -134,7 +135,7 @@ trait Huffman extends HuffmanInterface:
    * frequencies from that text and creates a code tree based on them.
    */
   def createCodeTree(chars: List[Char]): CodeTree = 
-    until(singleton, combine)(makeOrderedLeafList(times(chars))).head
+    (until(singleton, combine)(makeOrderedLeafList(times(chars)))).head
 
 
   // Part 3: Decoding
@@ -190,7 +191,7 @@ trait Huffman extends HuffmanInterface:
     def recurseTree(tree: CodeTree, text: Char, acc: List[Bit]): List[Bit] =
       tree match
         case Leaf(char, weight) => acc
-        case Fork(left, right, chars, weight) => if toLeftTree(left, text) then recurseTree(left, text, List(0):::acc) else recurseTree(right, text, List(1):::acc)
+        case Fork(left, right, chars, weight) => if toLeftTree(left, text) then recurseTree(left, text, acc:::List(0)) else recurseTree(right, text, acc:::List(1))
 
     def toLeftTree(tree: CodeTree, text: Char): Boolean = 
       tree match
@@ -240,6 +241,7 @@ trait Huffman extends HuffmanInterface:
    * To speed up the encoding process, it first converts the code tree to a code table
    * and then uses it to perform the actual encoding.
    */
-  def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+  def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = 
+    text.flatMap(codeBits(convert(tree))(_))
 
 object Huffman extends Huffman
