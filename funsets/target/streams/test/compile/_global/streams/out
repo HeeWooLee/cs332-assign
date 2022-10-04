@@ -1,6 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0m[31m-- [E045] Cyclic Error: C:\Users\dangn\Documents\2022 Fall\Software Design Methods\cs434\Functional Programming Principles in Scala\assn\funsets\src\test\scala\funsets\FunSetSuite.scala:115:18 [0m[0m
-[0m[[0m[31merror[0m] [0m[0m[31m115 |[0m      [33mval[0m [36ms[0m = map(s, makeDouble)[0m
-[0m[[0m[31merror[0m] [0m[0m    |                  [31m^[0m[0m
-[0m[[0m[31merror[0m] [0m[0m    |                  Recursive [33mvalue[0m [35ms[0m needs type[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
