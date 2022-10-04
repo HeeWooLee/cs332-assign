@@ -1,7 +1,0 @@
-[0m[[0m[0mdebug[0m] [0m[0m> Exec(test, Some(5da69488-3246-4b0e-bf09-bf8da337fd83), Some(CommandSource(console0)))[0m
-[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Test / test[0m
-[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
-[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to C:\Users\dangn\Documents\2022 Fall\Software Design Methods\cs434\Functional Programming Principles in Scala\assn\funsets\target\scala-3.0.0\classes ...[0m
-[0m[[0m[0minfo[0m] [0m[0mPassed: Total 3, Failed 0, Errors 0, Passed 2, Skipped 1[0m
-[0m[[0m[32msuccess[0m] [0m[0mTotal time: 2 s, completed 2022. 9. 14. 오후 11:29:51[0m
-[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
