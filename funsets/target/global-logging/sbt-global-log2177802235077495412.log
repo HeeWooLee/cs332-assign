@@ -1,0 +1,13 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(test, Some(2cb86004-1aeb-42d2-aec8-1867ac024d15), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Test / test[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to C:\Users\dangn\Documents\2022 Fall\Software Design Methods\cs434\Functional Programming Principles in Scala\assn\funsets\target\scala-3.0.0\test-classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m[31m-- [E045] Cyclic Error: C:\Users\dangn\Documents\2022 Fall\Software Design Methods\cs434\Functional Programming Principles in Scala\assn\funsets\src\test\scala\funsets\FunSetSuite.scala:115:18 [0m[0m
+[0m[[0m[31merror[0m] [0m[0m[31m115 |[0m      [33mval[0m [36ms[0m = map(s, makeDouble)[0m
+[0m[[0m[31merror[0m] [0m[0m    |                  [31m^[0m[0m
+[0m[[0m[31merror[0m] [0m[0m    |                  Recursive [33mvalue[0m [35ms[0m needs type[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0m(Test / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 1 s, completed 2022. 9. 15. 오후 6:28:57[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
