@@ -25,14 +25,18 @@ object Huffman {
 
   // Part 1: Basics
   def weight(tree: CodeTree): Int = 
-    tree match
-    case Fork(left, right, chars, weight) => weight
-    case Leaf(char, weight) => weight // tree match ...
+  tree match{
+    case f: Fork => f.weight
+    case l: Leaf => l.weight 
+  }
+  // tree match ...
   
-  def chars(tree: CodeTree): List[Char] =  
-    tree match
-    case Fork(left, right, chars, weight) => chars
-    case Leaf(char, weight) => List(char)
+  def chars(tree: CodeTree): List[Char] = 
+  tree match{
+    case f: Fork => f.chars
+    case l: Leaf => List(l.char)
+  }
+
     // tree match ...
   
   def makeCodeTree(left: CodeTree, right: CodeTree) =
@@ -77,9 +81,10 @@ object Huffman {
    *   }
    */
   def times(chars: List[Char]): List[(Char, Int)] = 
-    chars match
+    chars match{
       case Nil => Nil
       case _ =>  List((chars.head, chars.count(x => x == chars.head)))::: times(chars.filter(_ != chars.head))
+    }
 
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
@@ -108,21 +113,24 @@ object Huffman {
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
-  def combine(trees: List[CodeTree]): List[CodeTree] = 
+  def combine(trees: List[CodeTree]): List[CodeTree] = {
     def compare(weight: Int, tree: CodeTree):Boolean = 
-      tree match
+      tree match{
         case f: Fork => weight < f.weight
         case l: Leaf => weight < l.weight
+        }
       
     def comparator(x: CodeTree, y:CodeTree): Boolean = 
-      x match
+      x match{
         case f: Fork => compare(f.weight, y)
         case l: Leaf => compare(l.weight, y)
+        }
       
-    if trees.length < 2 then trees
+    if (trees.length < 2) 
+      trees
     else 
       (trees.drop(2)::: List(makeCodeTree(trees.head, trees.tail.head))).sortWith(comparator(_,_))
-
+}
   /**
    * This function will be called in the following way:
    *
@@ -141,8 +149,10 @@ object Huffman {
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
   def until(done: List[CodeTree] => Boolean, merge: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] = 
-    if done(trees) then trees
-    else until(done, merge)(merge(trees))
+    if (done(trees)) 
+      trees
+    else 
+      until(done, merge)(merge(trees))
 
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
@@ -162,21 +172,24 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = 
+  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
     def recurseTree(tree: CodeTree, bits: List[Bit]): Char = 
-      tree match
-        case f: Fork => if bits.head==1 then recurseTree(f.right, bits.tail) else recurseTree(f.left, bits.tail)
+      tree match{
+        case f: Fork => {if (bits.head==1) recurseTree(f.right, bits.tail) else recurseTree(f.left, bits.tail)}
         case l: Leaf => l.char
+        }
 
     def cutBit(tree: CodeTree, bits: List[Bit]): List[Bit] = 
-      tree match
-        case f: Fork => if bits.head==1 then cutBit(f.right, bits.tail) else cutBit(f.left, bits.tail)
+      tree match{
+        case f: Fork => {if (bits.head==1) cutBit(f.right, bits.tail) else cutBit(f.left, bits.tail)}
         case l: Leaf => bits
+        }
     
-    bits match
+    bits match{
       case Nil => Nil
       case _ => List(recurseTree(tree, bits)) ::: decode(tree, cutBit(tree, bits))
-    
+      }
+    }
   
   /**
    * A Huffman coding tree for the French language.
@@ -205,21 +218,24 @@ object Huffman {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-  def encode(tree: CodeTree)(text: List[Char]): List[Bit] =
+  def encode(tree: CodeTree)(text: List[Char]): List[Bit] ={    
     def recurseTree(tree: CodeTree, text: Char, acc: List[Bit]): List[Bit] =
-      tree match
-        case f: Fork => if toLeftTree(f.left, text) then recurseTree(f.left, text, acc:::List(0)) else recurseTree(f.right, text, acc:::List(1))
+      tree match{
+        case f: Fork => if (toLeftTree(f.left, text)) {recurseTree(f.left, text, acc:::List(0))} else recurseTree(f.right, text, acc:::List(1))
         case _ => acc
+        }
 
     def toLeftTree(tree: CodeTree, text: Char): Boolean = 
-      tree match
+      tree match{
         case l: Leaf => l.char==text
         case f: Fork => f.chars.contains(text) 
+        }
       
-    text match
+    text match{
       case Nil => Nil
       case _ => recurseTree(tree, text.head, List())::: encode(tree)(text.tail)
-
+      }
+  }
   
   // Part 4b: Encoding using code table
 
@@ -241,9 +257,10 @@ object Huffman {
    * sub-trees, think of how to build the code table for the entire tree.
    */
   def convert(tree: CodeTree): CodeTable = 
-    tree match
+    tree match{
       case l: Leaf => List((l.char, List()))
       case f: Fork => mergeCodeTables(convert(f.left), convert(f.right))
+      }
 
   /**
    * This function takes two code tables and merges them into one. Depending on how you
