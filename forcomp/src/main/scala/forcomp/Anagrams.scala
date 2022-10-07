@@ -53,10 +53,15 @@ object Anagrams {
    *    List(('a', 1), ('e', 1), ('t', 1)) -> Seq("ate", "eat", "tea")
    *
    */
-  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = ???
+  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = loadDictionary.groupBy(x => wordOccurrences(x))
 
   /** Returns all the anagrams of a given word. */
-  def wordAnagrams(word: Word): List[Word] = ???
+  def wordAnagrams(word: Word): List[Word] = {
+    dictionaryByOccurrences.get(wordOccurrences(word)) match{
+      case Some(s) => s
+      case None => Nil
+    }
+  }
 
   /** Returns the list of all subsets of the occurrence list.
    *  This includes the occurrence itself, i.e. `List(('k', 1), ('o', 1))`
@@ -80,7 +85,24 @@ object Anagrams {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+  def combinations(occurrences: Occurrences): List[Occurrences] = 
+  {
+    def combinationGenerator(occur: (Char, Int), acc: List[Occurrences]): List[Occurrences] = {  
+      for (i <- List.range(1, occur._2+1);
+          j <- List.range(0, acc.length))
+      yield acc.drop(j).head ::: List((occur._1, i))
+    }
+
+    def recurseCombination(occurrences: Occurrences, acc: List[Occurrences]): List[Occurrences] = {
+      occurrences match {
+        case Nil => acc
+        case _ => recurseCombination(occurrences.tail, acc ::: combinationGenerator(occurrences.head, acc))
+      }
+    }
+
+    recurseCombination(occurrences, List(List()))
+  }
+
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    * 
