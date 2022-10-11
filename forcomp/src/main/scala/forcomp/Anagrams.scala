@@ -114,8 +114,9 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
-
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = 
+    (x:::y).groupBy(_._1).map{case (k, v) => k -> v.map(_._2).reduceLeft(_-_)}.filter(x => x._2 != 0).toList.sortWith(_._1 < _._1)
+  
   /** Returns a list of all anagram sentences of the given sentence.
    *  
    *  An anagram of a sentence is formed by taking the occurrences of all the characters of
@@ -156,6 +157,13 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    /* 
+      first turn sentence into word occurrences 
+      then make combinations out of it
+      then pick one combination subtract and make what if no other combination is made out of left occurrences 
+    */
+    combinations(sentenceOccurrences(sentence))
+  }
 
 } 
