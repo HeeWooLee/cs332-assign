@@ -33,7 +33,7 @@ object Anagrams {
    *  Note: the uppercase and lowercase version of the character are treated as the
    *  same character, and are represented as a lowercase character in the occurrence list.
    */
-  def wordOccurrences(w: Word): Occurrences = w.toLowerCase.groupBy(x => x).toList.map(x => (x._1, x._2.length)).sortWith(_._1 < _._1)
+  def wordOccurrences(w: Word): Occurrences = w.toLowerCase.groupBy(x => x).toList.map(x => (x._1, x._2.length)).sortBy(_._1)
 
   /** Converts a sentence into its character occurrence list. */
   def sentenceOccurrences(s: Sentence): Occurrences = wordOccurrences(s.foldLeft("")(_+_))
@@ -56,12 +56,7 @@ object Anagrams {
   lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = loadDictionary.groupBy(x => wordOccurrences(x))
 
   /** Returns all the anagrams of a given word. */
-  def wordAnagrams(word: Word): List[Word] = {
-    dictionaryByOccurrences.get(wordOccurrences(word)) match{
-      case Some(s) => s
-      case None => Nil
-    }
-  }
+  def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences.getOrElse(wordOccurrences(word), Nil) 
 
   /** Returns the list of all subsets of the occurrence list.
    *  This includes the occurrence itself, i.e. `List(('k', 1), ('o', 1))`
@@ -158,12 +153,18 @@ object Anagrams {
    *  Note: There is only one anagram of an empty sentence.
    */
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
-    /* 
-      first turn sentence into word occurrences 
-      then make combinations out of it
-      then pick one combination subtract and make what if no other combination is made out of left occurrences 
-    */
-    combinations(sentenceOccurrences(sentence))
+    def occurrenceAnagrams(occurence: Occurrences): List[Sentence] = {
+      if (occurence == Nil) List(Nil)
+      else
+        for (
+          comb <- combinations(occurence);
+          word <- dictionaryByOccurrences.getOrElse(comb, Nil);
+          ocur <- occurrenceAnagrams(subtract(occurence, comb))
+          if comb != Nil
+        ) yield word :: ocur
+      
+    }
+    occurrenceAnagrams(sentenceOccurrences(sentence))
   }
 
 } 
