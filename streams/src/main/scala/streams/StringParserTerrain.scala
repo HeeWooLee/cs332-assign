@@ -57,7 +57,7 @@ trait StringParserTerrain extends GameDef {
     pos match {
       case Pos(x, y)
       => {
-        if ((x < levelVector.length) && (y < levelVector(0).length)) {
+        if ((x < levelVector.length) && (y < levelVector(0).length) && (x >= 0) && (y >= 0)) {
           if (levelVector(x)(y) == '-') false
           else true
         }
