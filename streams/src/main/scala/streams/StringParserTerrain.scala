@@ -76,7 +76,8 @@ trait StringParserTerrain extends GameDef {
   def findChar(c: Char, levelVector: Vector[Vector[Char]]): Pos = {
     val x = levelVector.indexWhere(_.indexOf(c)!= -1)
     val y = levelVector(x).indexOf(c)
-    Pos(x,y)}
+    Pos(x,y)
+    }
     
   private lazy val vector: Vector[Vector[Char]] =
     Vector(level.split("\n").map(str => Vector(str: _*)): _*)
