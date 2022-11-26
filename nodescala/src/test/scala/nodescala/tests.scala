@@ -30,9 +30,47 @@ class NodeScalaSuite extends FunSuite {
       case t: TimeoutException => // ok!
     }
   }
+  
+  test("A Future with any first completing future") {
+    val any = Future.any(List(Future { 1 }, Future { 2 }, Future { throw new Exception }))
+    val result = Await.result(any, 1 second)
+    try {
+      val result = Await.result(any, 1 second)
+      assert(result == 1 || result == 2)
+    } catch {
+      case t: Exception => // ok!
+    }
+  }
 
   
+  test("A Future with any first completing future- exception") {
+    val any = Future.any(List(Future { throw new Exception }))
+    try {
+      Await.result(any, 1 second)
+      fail()
+    }
+    catch {
+      case _: Exception => // Expected, so continue
+    }
+  }
   
+  test("A Future return list of all Futures") {
+    val all = Future.all(List(Future { 1 }, Future { 2 }))
+    val result = Await.result(all, 1 second)
+    assert(result == List(1,2))
+  }
+  
+  test("All future failed by one Future") {
+    val all = Future.all(List(Future { 1 }, Future { 2 }, Future { throw new Exception }))
+    try {
+      Await.result(all, 1 second)
+      fail()
+    }
+    catch {
+      case _: Exception => // Expected, so continue
+    }
+  }
+
   class DummyExchange(val request: Request) extends Exchange {
     @volatile var response = ""
     val loaded = Promise[String]()
